@@ -1,0 +1,52 @@
+services:
+  quantum-management-official:
+    image: quantum-management-official-mcp:latest
+    container_name: quantum-management-official
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+        JFROG_MCP_ACCESS_TOKEN: ${JFROG_MCP_ACCESS_TOKEN:-}
+    ports:
+      - "3012:3012"
+    environment:
+      MCP_TRANSPORT_TYPE: "http"
+      MCP_TRANSPORT_PORT: "3012"
+      PORT: "3012"
+      MCP_PACKAGE_NAME: "@chkp/quantum-management-mcp"
+      TOOL_PREFIX: "mgmt__"
+      MANAGEMENT_HOST: "${MANAGEMENT_HOST}"
+      MANAGEMENT_PORT: "${MANAGEMENT_PORT:-443}"
+      S1C_URL: "${S1C_URL:-}"
+      USERNAME: "${USERNAME:-}"
+      PASSWORD_FILE: "/run/secrets/mgmt_password"
+      CLOUD_INFRA_TOKEN: "${CLOUD_INFRA_TOKEN:-}"
+      API_KEY_FILE: "/run/secrets/cp_api_key"
+      DEBUG: "${DEBUG:-false}"
+    secrets:
+      - cp_api_key
+      - mgmt_password
+    volumes:
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["npx", "@chkp/quantum-management-mcp"]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').createConnection({host:'127.0.0.1', port: process.env.MCP_TRANSPORT_PORT||3012}).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+
+secrets:
+  cp_api_key:
+    file: ./secrets/cp_api_key.txt
+  mgmt_password:
+    file: ./secrets/mgmt_password.txt
