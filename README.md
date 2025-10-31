@@ -1,4 +1,4 @@
-# Quantum Management MCP (Official Build)
+# Quantum Management MCP
 
 Docker assets for running the official `@chkp/quantum-management-mcp` server with HTTP transport.
 
