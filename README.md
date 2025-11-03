@@ -35,8 +35,6 @@ Docker assets for running the official `@chkp/quantum-management-mcp` server wit
 
    # Optional extras
    # DEBUG=true
-   # NPM_REGISTRY=https://registry.npmjs.org
-   # JFROG_MCP_ACCESS_TOKEN=your-token
    ```
    - `MANAGEMENT_HOST` / `MANAGEMENT_PORT` target on-prem gateways.
    - `S1C_URL` is only required for Smart-1 Cloud deployments.
@@ -45,9 +43,6 @@ Docker assets for running the official `@chkp/quantum-management-mcp` server wit
 2. Populate Docker secrets with your credentials:
    - `secrets/cp_api_key.txt` for API-key authentication.
    - `secrets/mgmt_password.txt` when using username/password. (Leave empty or delete if unused.)
-3. Optional registry access:
-   - Set `NPM_REGISTRY` / `JFROG_MCP_ACCESS_TOKEN` (or other token) via `.env` or Compose overrides before building.
-
 ## Usage
 
 ```bash
@@ -80,4 +75,3 @@ To expose a different host port, update both:
 
 - Container restarts immediately: ensure the secrets files exist and `.env` provides either `S1C_URL` or `MANAGEMENT_HOST`.
 - Healthcheck fails: ensure the configured transport port is free and the management endpoint is reachable.
-- Registry errors: verify registry URL/token and rerun `docker compose build`.
