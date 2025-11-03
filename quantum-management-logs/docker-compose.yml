@@ -13,16 +13,16 @@ services:
       PORT: "3002"
       MCP_PACKAGE_NAME: "@chkp/management-logs-mcp"
       TOOL_PREFIX: "logs__"
-      # === Ziel-Management ===
-      MANAGEMENT_HOST: "${MANAGEMENT_HOST}"         # z.B. 192.168.2.230
+      # === Target management ===
+      MANAGEMENT_HOST: "${MANAGEMENT_HOST}"         # e.g. 192.168.2.230
       MANAGEMENT_PORT: "${MANAGEMENT_PORT:-443}"
       # === Secrets ===
       API_KEY_FILE: "/run/secrets/cp_api_key"
-      # Debug aus in Prod:
+      # Turn off debug in production:
       DEBUG: "${DEBUG:-false}"
     secrets:
       - cp_api_key
-    # EntryPoint-Script ins Image >> wir binden es rein (kein Dockerfile-Patch nötig)
+    # Mount the entrypoint script into the image so no Dockerfile patch is needed
     volumes:
       - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
     entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
