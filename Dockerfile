@@ -10,14 +10,16 @@ COPY --from=build /app/node_modules /app/node_modules
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# MCP_PORT defines the transport/listening port for the MCP server and defaults to 3012.
+ARG MCP_PORT=3012
 ENV NODE_ENV=production \
     DEBUG=false \
     MCP_TRANSPORT_TYPE=http \
-    MCP_TRANSPORT_PORT=3012 \
-    PORT=3012 \
+    MCP_TRANSPORT_PORT=${MCP_PORT} \
+    PORT=${MCP_PORT} \
     MANAGEMENT_PORT=443
 
-EXPOSE 3012
+EXPOSE ${MCP_PORT}
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["npx", "@chkp/quantum-management-mcp"]
