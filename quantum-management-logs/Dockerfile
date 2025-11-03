@@ -1,22 +1,8 @@
-# --- Build stage: holt das Paket mit Registry-Token ---
+# --- Build stage: installiert das MCP-Paket ---
 FROM node:22-alpine AS build
 WORKDIR /app
 
-ARG NPM_REGISTRY="https://registry.npmjs.org/"
-ARG JFROG_MCP_ACCESS_TOKEN
-
-# Nur wenn Registry + Token vorhanden → temporär in diesem Stage setzen
-RUN npm config set registry "${NPM_REGISTRY}" \
- && if [ -n "${JFROG_MCP_ACCESS_TOKEN}" ]; then \
-      REGISTRY_DOMAIN="$(echo "${NPM_REGISTRY}" | sed 's|https\?://||;s|/$||')" && \
-      npm config set "//${REGISTRY_DOMAIN}:_authToken" "${JFROG_MCP_ACCESS_TOKEN}"; \
-    fi \
- && npm cache clean --force \
- && npm install --omit=dev @chkp/management-logs-mcp \
- && if [ -n "${JFROG_MCP_ACCESS_TOKEN}" ]; then \
-      REGISTRY_DOMAIN="$(echo "${NPM_REGISTRY}" | sed 's|https\?://||;s|/$||')" && \
-      npm config delete "//${REGISTRY_DOMAIN}:_authToken"; \
-    fi
+RUN npm install --omit=dev @chkp/management-logs-mcp
 
 # --- Runtime stage: schlank, ohne Token/Configs ---
 FROM node:22-alpine
