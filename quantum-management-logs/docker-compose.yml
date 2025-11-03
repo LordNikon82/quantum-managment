@@ -5,10 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        # optional – nur falls du die private Registry brauchst:
-        NPM_REGISTRY: ${NPM_REGISTRY:-}
-        JFROG_MCP_ACCESS_TOKEN: ${JFROG_MCP_ACCESS_TOKEN:-}
     ports:
       - "3002:3002"
     environment:

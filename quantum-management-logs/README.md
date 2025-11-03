@@ -4,7 +4,7 @@ Docker assets for running the official `@chkp/management-logs-mcp` server with H
 
 ## Structure
 
-- `Dockerfile` – multi-stage build that installs the MCP package without leaking registry tokens.
+- `Dockerfile` – multi-stage build that installs the MCP package without requiring registry tokens.
 - `docker-compose.yml` – docker-compose definition with healthcheck and secret mounting.
 - `docker-entrypoint.sh` – loads secrets, optionally prefixes tool names, and validates required env vars.
 - `secrets/*.txt` – placeholders for API keys and other confidential values.
@@ -17,7 +17,7 @@ Docker assets for running the official `@chkp/management-logs-mcp` server with H
 
 ## Configuration
 
-1. Create a `.env` file in this directory if you need to override defaults such as `MANAGEMENT_HOST`, `MANAGEMENT_PORT`, or transport port values.
+1. Review the provided `.env` file and adjust values such as `MANAGEMENT_HOST`, `MANAGEMENT_PORT`, or transport port values for your environment.
 2. Populate the secret file with your API key:
    ```bash
    $EDITOR secrets/cp_api_key.txt
