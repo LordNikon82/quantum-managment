@@ -1,0 +1,45 @@
+services:
+  quantum-gw-cli-official:
+    image: quantum-gw-cli-official-mcp:latest
+    container_name: quantum-gw-cli-official
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+        JFROG_MCP_ACCESS_TOKEN: ${JFROG_MCP_ACCESS_TOKEN:-}
+    ports:
+      - "${GW_CLI_PORT:-3003}:3003"
+    environment:
+      MCP_TRANSPORT_TYPE: "http"
+      MCP_HTTP_PORT: "3003"
+      PORT: "3003"
+      MCP_PACKAGE_NAME: "@chkp/quantum-gw-cli-mcp"
+      TOOL_PREFIX: "${GW_CLI_TOOL_PREFIX:-gw-cli__}"
+      MANAGEMENT_HOST: "${MANAGEMENT_HOST}"
+      MANAGEMENT_PORT: "${MANAGEMENT_PORT:-443}"
+      USERNAME: "${GW_CLI_USERNAME:-}"
+      PASSWORD_FILE: "/run/secrets/gw_cli_password"
+      API_KEY_FILE: "/run/secrets/gw_cli_api_key"
+    secrets:
+      - gw_cli_password
+      - gw_cli_api_key
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').createConnection({host:'127.0.0.1', port: process.env.MCP_HTTP_PORT||3003}).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+
+secrets:
+  gw_cli_password:
+    file: ./secrets/gw_cli_password.txt
+  gw_cli_api_key:
+    file: ./secrets/gw_cli_api_key.txt
