@@ -4,11 +4,11 @@ Docker assets for running the official `@chkp/quantum-gw-cli-mcp` server with HT
 
 ## Structure
 
-- `Dockerfile` – multi-stage build that installs the published MCP package with optional private registry support.
+- `Dockerfile` – multi-stage build that installs the published MCP package.
 - `docker-compose.yml` – local container definition with healthcheck and Docker secrets wiring.
 - `docker-entrypoint.sh` – injects CLI flags, prefixes tool names, and loads secrets at runtime.
 - `secrets/*.txt` – placeholders for API key/password secret files consumed by Docker secrets.
-- `.env` – runtime configuration loaded by Docker Compose (create manually).
+- `.env` – runtime configuration loaded by Docker Compose (copy from `.env.example`).
 
 ## Requirements
 
@@ -18,29 +18,15 @@ Docker assets for running the official `@chkp/quantum-gw-cli-mcp` server with HT
 
 ## Configuration
 
-1. Create a `.env` file inside this directory (`quantum-gw-cli/.env`) if it does not already exist. Start from the snippet below and adjust values to your environment:
-   ```dotenv
-   # Gateway CLI transport port configuration
-   GW_CLI_TRANSPORT_PORT=3003
-   GW_CLI_PUBLISHED_PORT=3003
-
-   # Target Management
-   MANAGEMENT_HOST=your-mgmt-hostname
-   MANAGEMENT_PORT=443
-
-   # Optional authentication helpers
-   GW_CLI_USERNAME=your-admin-username
-   # Leave GW_CLI_USERNAME blank when using API key auth only
-
-   # Optional extras
-   GW_CLI_TOOL_PREFIX=gw-cli__
-   GW_CLI_CLOUD_INFRA_TOKEN=
-   DEBUG=false
+1. Copy the provided example configuration and adjust it to your environment:
+   ```bash
+   cp .env.example .env
+   $EDITOR .env
    ```
    - `GW_CLI_TRANSPORT_PORT` controls the port exposed inside the container (default `3003`).
    - `GW_CLI_PUBLISHED_PORT` sets the host port published by Compose; change when the host port differs from the transport port.
    - `MANAGEMENT_HOST`/`MANAGEMENT_PORT` target the on-prem management server.
-   - Set `GW_CLI_USERNAME` and the password secret when using username/password authentication.
+   - Set `GW_CLI_USERNAME` and the password secret when using username/password authentication. Leave it blank when using API-key only auth.
 2. Populate Docker secrets with your credentials:
    - `secrets/gw_cli_api_key.txt` for API-key authentication.
    - `secrets/gw_cli_password.txt` when using username/password. (Leave empty or delete if unused.)

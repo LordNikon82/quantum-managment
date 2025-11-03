@@ -1,21 +1,8 @@
-# --- Build stage: fetch gw-cli package with optional private registry token ---
+# --- Build stage: fetch gw-cli package ---
 FROM node:22-alpine AS build
 WORKDIR /app
 
-ARG NPM_REGISTRY="https://registry.npmjs.org/"
-ARG JFROG_MCP_ACCESS_TOKEN
-
-RUN npm config set registry "${NPM_REGISTRY}" \
- && if [ -n "${JFROG_MCP_ACCESS_TOKEN}" ]; then \
-      REGISTRY_DOMAIN="$(echo "${NPM_REGISTRY}" | sed 's|https\?://||;s|/$||')" && \
-      npm config set "//${REGISTRY_DOMAIN}:_authToken" "${JFROG_MCP_ACCESS_TOKEN}"; \
-    fi \
- && npm cache clean --force \
- && npm install --omit=dev @chkp/quantum-gw-cli-mcp \
- && if [ -n "${JFROG_MCP_ACCESS_TOKEN}" ]; then \
-      REGISTRY_DOMAIN="$(echo "${NPM_REGISTRY}" | sed 's|https\?://||;s|/$||')" && \
-      npm config delete "//${REGISTRY_DOMAIN}:_authToken"; \
-    fi
+RUN npm install --omit=dev @chkp/quantum-gw-cli-mcp
 
 # --- Runtime stage: lean image without registry credentials ---
 FROM node:22-alpine
