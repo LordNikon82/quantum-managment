@@ -21,7 +21,7 @@ if [ -n "${TOOL_PREFIX:-}" ]; then
   MCP_PACKAGE="${MCP_PACKAGE_NAME:-@chkp/quantum-gw-cli-mcp}"
   PREFIX_MARKER="/app/.tool-prefix-applied"
   if [ ! -f "$PREFIX_MARKER" ]; then
-    node <<'EOF'
+    node <<'EOF_NODE'
 const fs = require("fs");
 const path = require.resolve((process.env.MCP_PACKAGE_NAME || "@chkp/quantum-gw-cli-mcp") + "/dist/index.js");
 const prefix = process.env.TOOL_PREFIX || "";
@@ -36,7 +36,7 @@ const replaced = content.replace(/server\.tool\(\s*"([^"]+)"/g, (match, name) =>
 if (content !== replaced) {
   fs.writeFileSync(path, replaced, "utf8");
 }
-EOF
+EOF_NODE
     touch "$PREFIX_MARKER"
   fi
 fi
@@ -111,8 +111,8 @@ if [ -n "${CLOUD_INFRA_TOKEN:-}" ]; then
   fi
 fi
 
-if [ -n "${USERNAME:-${GW_USERNAME:-}}}" ]; then
-  USER_VAL="${USERNAME:-${GW_USERNAME:-}}"
+USER_VAL="${USERNAME:-${GW_USERNAME:-}}"
+if [ -n "$USER_VAL" ]; then
   FOUND=false
   for arg in "$@"; do
     if [ "$arg" = "--username" ]; then
@@ -125,8 +125,8 @@ if [ -n "${USERNAME:-${GW_USERNAME:-}}}" ]; then
   fi
 fi
 
-if [ -n "${PASSWORD:-${GW_PASSWORD:-}}}" ]; then
-  PASS_VAL="${PASSWORD:-${GW_PASSWORD:-}}"
+PASS_VAL="${PASSWORD:-${GW_PASSWORD:-}}"
+if [ -n "$PASS_VAL" ]; then
   FOUND=false
   for arg in "$@"; do
     if [ "$arg" = "--password" ]; then
