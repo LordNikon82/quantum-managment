@@ -5,9 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        NPM_REGISTRY: ${NPM_REGISTRY:-}
-        JFROG_MCP_ACCESS_TOKEN: ${JFROG_MCP_ACCESS_TOKEN:-}
     ports:
       - "${MCP_PUBLISHED_PORT:-3012}:${MCP_TRANSPORT_PORT:-3012}"
     environment:
