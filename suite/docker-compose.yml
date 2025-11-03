@@ -1,0 +1,19 @@
+services:
+  quantum-mcp-suite:
+    image: quantum-mcp-suite:latest
+    container_name: quantum-mcp-suite
+    build:
+      context: ..
+      dockerfile: suite/Dockerfile
+    ports:
+      - "${MGMT_PUBLISHED_PORT:-3012}:${MGMT_TRANSPORT_PORT:-3012}"
+      - "${GW_PUBLISHED_PORT:-3003}:${GW_TRANSPORT_PORT:-3003}"
+      - "${LOGS_PUBLISHED_PORT:-3002}:${LOGS_TRANSPORT_PORT:-3002}"
+    env_file:
+      - .env
+    secrets:
+      - quantum_suite_secrets
+
+secrets:
+  quantum_suite_secrets:
+    file: ./secrets/quantum-mcp-suite.secrets
