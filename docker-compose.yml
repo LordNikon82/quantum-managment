@@ -9,11 +9,12 @@ services:
         NPM_REGISTRY: ${NPM_REGISTRY:-}
         JFROG_MCP_ACCESS_TOKEN: ${JFROG_MCP_ACCESS_TOKEN:-}
     ports:
-      - "3012:3012"
+      - "${MCP_PUBLISHED_PORT:-3012}:${MCP_TRANSPORT_PORT:-3012}"
     environment:
       MCP_TRANSPORT_TYPE: "http"
-      MCP_TRANSPORT_PORT: "3012"
-      PORT: "3012"
+      MCP_TRANSPORT_PORT: "${MCP_TRANSPORT_PORT:-3012}"
+      MCP_PUBLISHED_PORT: "${MCP_PUBLISHED_PORT:-3012}"
+      PORT: "${MCP_TRANSPORT_PORT:-3012}"
       MCP_PACKAGE_NAME: "@chkp/quantum-management-mcp"
       TOOL_PREFIX: "mgmt__"
       MANAGEMENT_HOST: "${MANAGEMENT_HOST}"
