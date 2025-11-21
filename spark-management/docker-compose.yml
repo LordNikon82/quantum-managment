@@ -1,0 +1,48 @@
+services:
+  spark-management-official:
+    image: spark-management-official-mcp:latest
+    container_name: spark-management-official
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${SPARK_PUBLISHED_PORT:-3007}:${SPARK_TRANSPORT_PORT:-3007}"
+    environment:
+      MCP_TRANSPORT_TYPE: "http"
+      MCP_TRANSPORT_PORT: "${SPARK_TRANSPORT_PORT:-3007}"
+      MCP_PUBLISHED_PORT: "${SPARK_PUBLISHED_PORT:-3007}"
+      PORT: "${SPARK_TRANSPORT_PORT:-3007}"
+      MCP_PACKAGE_NAME: "@chkp/spark-management-mcp"
+      TOOL_PREFIX: "spark__"
+      CLIENT_ID: "${CLIENT_ID:-}"
+      CLIENT_ID_FILE: "/run/secrets/spark_client_id"
+      SECRET_KEY_FILE: "/run/secrets/spark_secret_key"
+      INFINITY_PORTAL_URL: "${INFINITY_PORTAL_URL}"
+      REGION: "${REGION:-EU}"
+      DEBUG: "${DEBUG:-false}"
+    secrets:
+      - spark_client_id
+      - spark_secret_key
+    volumes:
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["npx", "@chkp/spark-management-mcp"]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').createConnection({host:'127.0.0.1', port: process.env.MCP_TRANSPORT_PORT||3007}).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+
+secrets:
+  spark_client_id:
+    file: ./secrets/spark_client_id.txt
+  spark_secret_key:
+    file: ./secrets/spark_secret_key.txt
