@@ -9,6 +9,7 @@ Docker assets for running the official Check Point Quantum MCP servers.
 - [`quantum-gw-connection-analysis/`](quantum-gw-connection-analysis/README.md) – Quantum Gateway Connection Analysis MCP server.
 - [`quantum-management-logs/`](quantum-management-logs/README.md) – Quantum Management Logs MCP server.
 - [`quantum-gaia/`](quantum-gaia/README.md) – Quantum Gaia MCP server.
+- [`cpinfo-analysis/`](cpinfo-analysis/README.md) – CPInfo Analysis MCP server.
 
 Each directory contains its own Dockerfile, Compose definition, entrypoint script, and (where applicable) secrets placeholders. Consult the individual READMEs for configuration and usage instructions.
 
