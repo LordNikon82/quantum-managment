@@ -13,6 +13,7 @@ Docker assets for running the official Check Point Quantum MCP servers.
 - [`cpinfo-analysis/`](cpinfo-analysis/README.md) – CPInfo Analysis MCP server.
 - [`documentation/`](documentation/README.md) – Documentation Tool MCP server.
 - [`threat-prevention/`](threat-prevention/README.md) – Threat Prevention MCP server.
+- [`threat-emulation/`](threat-emulation/README.md) – Threat Emulation MCP server.
 
 Each directory contains its own Dockerfile, Compose definition, entrypoint script, and (where applicable) secrets placeholders. Consult the individual READMEs for configuration and usage instructions.
 
