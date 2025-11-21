@@ -1,0 +1,45 @@
+services:
+  documentation-official:
+    image: documentation-official-mcp:latest
+    container_name: documentation-official
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${DOCUMENTATION_PUBLISHED_PORT:-3000}:${DOCUMENTATION_TRANSPORT_PORT:-3000}"
+    environment:
+      MCP_TRANSPORT_TYPE: "${MCP_TRANSPORT_TYPE:-http}"
+      MCP_HTTP_PORT: "${DOCUMENTATION_TRANSPORT_PORT:-3000}"
+      MCP_TRANSPORT_PORT: "${DOCUMENTATION_TRANSPORT_PORT:-3000}"
+      MCP_PUBLISHED_PORT: "${DOCUMENTATION_PUBLISHED_PORT:-3000}"
+      PORT: "${DOCUMENTATION_TRANSPORT_PORT:-3000}"
+      CLIENT_ID_FILE: "/run/secrets/documentation_client_id"
+      SECRET_KEY_FILE: "/run/secrets/documentation_secret_key"
+      REGION: "${REGION:-EU}"
+      DEBUG: "${DEBUG:-false}"
+    secrets:
+      - documentation_client_id
+      - documentation_secret_key
+    volumes:
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["npx", "@chkp/documentation-mcp"]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').createConnection({host:'127.0.0.1', port: process.env.MCP_HTTP_PORT||3000}).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+
+secrets:
+  documentation_client_id:
+    file: ./secrets/documentation_client_id.txt
+  documentation_secret_key:
+    file: ./secrets/documentation_secret_key.txt
