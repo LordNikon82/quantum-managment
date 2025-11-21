@@ -6,6 +6,7 @@ Docker assets for running the official Check Point Quantum MCP servers.
 
 - [`quantum-management/`](quantum-management/README.md) – Quantum Management MCP server.
 - [`quantum-gw-cli/`](quantum-gw-cli/README.md) – Quantum Gateway CLI MCP server.
+- [`quantum-gw-connection-analysis/`](quantum-gw-connection-analysis/README.md) – Quantum Gateway Connection Analysis MCP server.
 - [`quantum-management-logs/`](quantum-management-logs/README.md) – Quantum Management Logs MCP server.
 - [`quantum-gaia/`](quantum-gaia/README.md) – Quantum Gaia MCP server.
 
