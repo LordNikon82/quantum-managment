@@ -1,0 +1,37 @@
+services:
+  threat-prevention-official:
+    image: threat-prevention-official-mcp:latest
+    container_name: threat-prevention-official
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: "${NPM_REGISTRY:-https://registry.npmjs.org/}"
+        JFROG_MCP_ACCESS_TOKEN: "${JFROG_MCP_ACCESS_TOKEN:-}"
+    ports:
+      - "${THREAT_PREVENTION_PUBLISHED_PORT:-3008}:${THREAT_PREVENTION_TRANSPORT_PORT:-3008}"
+    environment:
+      MCP_TRANSPORT_TYPE: "${MCP_TRANSPORT_TYPE:-http}"
+      MCP_HTTP_PORT: "${THREAT_PREVENTION_TRANSPORT_PORT:-3008}"
+      MCP_TRANSPORT_PORT: "${THREAT_PREVENTION_TRANSPORT_PORT:-3008}"
+      MCP_PUBLISHED_PORT: "${THREAT_PREVENTION_PUBLISHED_PORT:-3008}"
+      MCP_PACKAGE_NAME: "@chkp/threat-prevention-mcp"
+      PORT: "${THREAT_PREVENTION_TRANSPORT_PORT:-3008}"
+      DEBUG: "${DEBUG:-false}"
+    volumes:
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["npx", "@chkp/threat-prevention-mcp"]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('net').createConnection({host:'127.0.0.1', port: process.env.MCP_HTTP_PORT||3008}).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
